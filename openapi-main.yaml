@@ -1,0 +1,372 @@
+openapi: 3.0.0
+servers:
+  - url: 'http://localhost:3000'
+info:
+  title: "Transit API"
+  description: "API documentation for managing transit lines and stations."
+  version: "1.0.0"
+
+paths:
+  /lines:
+    get:
+      operationId: getLines
+      summary: "List all lines"
+      description: "Retrieve a list of all transit lines with optional sorting by specified fields."
+      parameters:
+        - name: "sortBy"
+          in: "query"
+          description: "Field to sort by (e.g., 'name' or 'couleur')"
+          schema:
+            type: "string"
+        - name: "sortDirection"
+          in: "query"
+          description: "Sorting direction: ascending (asc) or descending (desc)"
+          schema:
+            type: "string"
+            enum: ["asc", "desc"]
+      responses:
+        '200':
+          description: "A list of all lines."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: "Line A"
+                        couleur:
+                          type: string
+                          example: "#FF5733"
+                        open:
+                          type: boolean
+                          example: true
+    post:
+      operationId: createLine
+      summary: "Create a new line"
+      description: "Create a new transit line with specified name, color, and open status."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, couleur, open]
+              properties:
+                name:
+                  type: string
+                  description: "The name of the line"
+                  example: "Line A"
+                couleur:
+                  type: string
+                  description: "The color of the line in hex format"
+                  example: "#FF5733"
+                open:
+                  type: boolean
+                  description: "Whether the line is open (true) or closed (false)"
+                  example: true
+      responses:
+        '200':
+          description: "Line created successfully."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: "Line A"
+
+  /lines/{id}:
+    get:
+      operationId: getLineById
+      summary: "Retrieve a line by ID"
+      description: "Get details of a single line by its ID."
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          description: "The ID of the line to retrieve"
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "Line details retrieved successfully."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: "Line A"
+                      couleur:
+                        type: string
+                        example: "#FF5733"
+                      open:
+                        type: boolean
+                        example: true
+        '404':
+          description: "Line not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Line not found."
+
+    delete:
+      operationId: deleteLineById
+      summary: "Delete a line by ID"
+      description: "Delete a line by its ID and return a success status."
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          description: "The ID of the line to delete"
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "Line deleted successfully."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Line deleted successfully."
+        '404':
+          description: "Line not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Line not found."
+
+  /stations:
+    get:
+      operationId: getStations
+      summary: "List all stations"
+      description: "Retrieve a list of all stations with optional sorting."
+      parameters:
+        - name: "sortBy"
+          in: "query"
+          description: "Field to sort by (e.g., 'name', 'x', or 'y')"
+          schema:
+            type: "string"
+        - name: "sortDirection"
+          in: "query"
+          description: "Sorting direction: ascending (asc) or descending (desc)"
+          schema:
+            type: "string"
+            enum: ["asc", "desc"]
+      responses:
+        '200':
+          description: "A list of all stations."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: "Station A"
+                        x:
+                          type: number
+                          description: "The x-coordinate of the station"
+                          example: 100
+                        y:
+                          type: number
+                          description: "The y-coordinate of the station"
+                          example: 200
+    post:
+      operationId: createStation
+      summary: "Create a new station"
+      description: "Create a new station with specified name and coordinates (x, y)."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, x, y]
+              properties:
+                name:
+                  type: string
+                  description: "The name of the station"
+                  example: "Station A"
+                x:
+                  type: number
+                  description: "The x-coordinate of the station"
+                  example: 100
+                y:
+                  type: number
+                  description: "The y-coordinate of the station"
+                  example: 200
+      responses:
+        '200':
+          description: "Station created successfully."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: "Station A"
+
+  /stations/{id}:
+    get:
+      operationId: getStationById
+      summary: "Retrieve a station by ID"
+      description: "Get details of a single station by its ID."
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          description: "The ID of the station to retrieve"
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "Station details retrieved successfully."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: "Station A"
+                      x:
+                        type: number
+                        example: 100
+                      y:
+                        type: number
+                        example: 200
+        '404':
+          description: "Station not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Station not found."
+
+    delete:
+      operationId: deleteStationById
+      summary: "Delete a station by ID"
+      description: "Delete a station by its ID and return a success status."
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          description: "The ID of the station to delete"
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "Station deleted successfully."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Station deleted successfully."
+        '404':
+          description: "Station not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Station not found."
