@@ -92,3 +92,32 @@ export const create = async (name, x, y) => {
     });
 };
 
+/**
+ * Met à jour les coordonnées (x, y) d'une station par son nom
+ * @param {string} name - Le nom de la station
+ * @param {object} data - Un objet contenant les nouvelles coordonnées { x, y }
+ * @returns {Promise<object|null>} - L'objet station mis à jour ou null si la station n'existe pas
+ */
+export const updateByName = async (name, data) => {
+    // Vérifier si la station existe par son nom
+    const station = await prisma.station.findUnique({
+        where: { name },
+        select: { id: true, name: true, x: true, y: true }
+    });
+
+    if (!station) {
+        return null; // La station n'existe pas
+    }
+
+    // Mettre à jour les coordonnées
+    return prisma.station.update({
+        where: { name },
+        data,
+        select: {
+            id: true,
+            name: true,
+            x: true,
+            y: true
+        }
+    });
+};

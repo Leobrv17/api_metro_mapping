@@ -5,6 +5,7 @@ import * as OpenApiValidator from 'express-openapi-validator'
 import * as url from 'url';
 import linesRouter from "./routers/lines.router.js";
 import stationRouter from "./routers/station.router.js";
+import connectionRouter from "./routers/connections.router.js";
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
@@ -21,6 +22,7 @@ app.use(OpenApiValidator.middleware({
 // API routers
 app.use('/lines', linesRouter)
 app.use('/stations', stationRouter)
+app.use('/connections', connectionRouter)
 
 app.use((err, req, res, next) => {
     // format error

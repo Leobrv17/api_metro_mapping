@@ -11,7 +11,7 @@ datasource db {
 }
 
 model Ligne {
-  id       String    @id @default(uuid()) @unique
+  id       String    @id @unique @default(uuid())
   name     String
   couleur  String
   open     Boolean
@@ -19,27 +19,27 @@ model Ligne {
 }
 
 model Station {
-  id         String     @id @default(uuid()) @unique
-  name       String
-  x          Int        // Coordonnée x
-  y          Int        // Coordonnée y
-  lignes     Ligne[]    @relation("LigneStations") // Many-to-many relation
+  id             String      @id @unique @default(uuid())
+  name           String      @unique
+  x              Int // Coordonnée x
+  y              Int // Coordonnée y
+  lignes         Ligne[]     @relation("LigneStations") // Many-to-many relation
   connexionsFrom Connexion[] @relation("FromStation") // Connexions sortantes
-  connexionsTo   Connexion[] @relation("ToStation")   // Connexions entrantes
-  metros     Metro[]     // Métros passant par cette station
+  connexionsTo   Connexion[] @relation("ToStation") // Connexions entrantes
+  metros         Metro[] // Métros passant par cette station
 }
 
 model Connexion {
-  id            String    @id @default(uuid()) @unique
-  fromStation   Station   @relation("FromStation", fields: [fromStationId], references: [id])
+  id            String  @id @unique @default(uuid())
+  fromStation   Station @relation("FromStation", fields: [fromStationId], references: [id])
   fromStationId String
-  toStation     Station   @relation("ToStation", fields: [toStationId], references: [id])
+  toStation     Station @relation("ToStation", fields: [toStationId], references: [id])
   toStationId   String
 }
 
 model Metro {
-  id         String   @id @default(uuid()) @unique
-  direction  Int      // 1 ou -1 pour la direction
-  station    Station  @relation(fields: [stationId], references: [id])
-  stationId  String
+  id        String  @id @unique @default(uuid())
+  direction Int // 1 ou -1 pour la direction
+  station   Station @relation(fields: [stationId], references: [id])
+  stationId String
 }

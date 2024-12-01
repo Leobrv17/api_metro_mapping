@@ -1,5 +1,11 @@
 import express from 'express'
-import {getStations, createStation, deleteStationById, getStationById} from "../controllers/station.controller.js";
+import {
+    getStations,
+    createStation,
+    deleteStationById,
+    getStationById,
+    updateStationCoordinatesByName
+} from "../controllers/station.controller.js";
 
 // Create a new router
 const router = express.Router()
@@ -10,6 +16,7 @@ router.get('/', getStations) // Will match GET /users
 router.get('/:id', getStationById) // Will match GET /users/:id
 router.delete('/:id', deleteStationById) // Will match DELETE /users/:id
 router.post('/', createStation) // Will match POST /users
+router.put('/name/:name/coordinates', updateStationCoordinatesByName);
 
 // Export the router to be used on the app
 export default router

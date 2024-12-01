@@ -9,6 +9,8 @@ info:
 paths:
   /lines:
     get:
+      tags:
+        - Lines
       operationId: getLines
       summary: "List all lines"
       description: "Retrieve a list of all transit lines with optional sorting by specified fields."
@@ -23,7 +25,7 @@ paths:
           description: "Sorting direction: ascending (asc) or descending (desc)"
           schema:
             type: "string"
-            enum: ["asc", "desc"]
+            enum: [ "asc", "desc" ]
       responses:
         '200':
           description: "A list of all lines."
@@ -53,6 +55,8 @@ paths:
                           type: boolean
                           example: true
     post:
+      tags:
+        - Lines
       operationId: createLine
       summary: "Create a new line"
       description: "Create a new transit line with specified name, color, and open status."
@@ -62,7 +66,7 @@ paths:
           application/json:
             schema:
               type: object
-              required: [name, couleur, open]
+              required: [ name, couleur, open ]
               properties:
                 name:
                   type: string
@@ -99,6 +103,8 @@ paths:
 
   /lines/{id}:
     get:
+      tags:
+        - Lines
       operationId: getLineById
       summary: "Retrieve a line by ID"
       description: "Get details of a single line by its ID."
@@ -150,6 +156,8 @@ paths:
                     example: "Line not found."
 
     delete:
+      tags:
+        - Lines
       operationId: deleteLineById
       summary: "Delete a line by ID"
       description: "Delete a line by its ID and return a success status."
@@ -190,6 +198,8 @@ paths:
 
   /stations:
     get:
+      tags:
+        - Stations
       operationId: getStations
       summary: "List all stations"
       description: "Retrieve a list of all stations with optional sorting."
@@ -204,7 +214,7 @@ paths:
           description: "Sorting direction: ascending (asc) or descending (desc)"
           schema:
             type: "string"
-            enum: ["asc", "desc"]
+            enum: [ "asc", "desc" ]
       responses:
         '200':
           description: "A list of all stations."
@@ -236,6 +246,8 @@ paths:
                           description: "The y-coordinate of the station"
                           example: 200
     post:
+      tags:
+        - Stations
       operationId: createStation
       summary: "Create a new station"
       description: "Create a new station with specified name and coordinates (x, y)."
@@ -245,7 +257,7 @@ paths:
           application/json:
             schema:
               type: object
-              required: [name, x, y]
+              required: [ name, x, y ]
               properties:
                 name:
                   type: string
@@ -282,6 +294,8 @@ paths:
 
   /stations/{id}:
     get:
+      tags:
+        - Stations
       operationId: getStationById
       summary: "Retrieve a station by ID"
       description: "Get details of a single station by its ID."
@@ -333,6 +347,8 @@ paths:
                     example: "Station not found."
 
     delete:
+      tags:
+        - Stations
       operationId: deleteStationById
       summary: "Delete a station by ID"
       description: "Delete a station by its ID and return a success status."
@@ -370,3 +386,272 @@ paths:
                   message:
                     type: string
                     example: "Station not found."
+  /stations/name/{name}/coordinates:
+    put:
+      tags:
+        - Stations
+      summary: "Update station coordinates by name"
+      description: "Update the x and y coordinates of a station identified by its name."
+      operationId: updateStationCoordinatesByName
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: "The name of the station to update."
+          schema:
+            type: string
+      requestBody:
+        description: "New coordinates for the station."
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - x
+                - y
+              properties:
+                x:
+                  type: number
+                  description: "The new x-coordinate of the station."
+                  example: 150
+                y:
+                  type: number
+                  description: "The new y-coordinate of the station."
+                  example: 300
+      responses:
+        '200':
+          description: "Station updated successfully."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: "StationA"
+                      x:
+                        type: number
+                        example: 150
+                      y:
+                        type: number
+                        example: 300
+        '400':
+          description: "Invalid input (e.g., missing or incorrect coordinates)."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Invalid coordinates. Both x and y must be numbers."
+        '404':
+          description: "Station not found."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Station not found."
+  /connections:
+    get:
+      tags:
+        - Connections
+      operationId: getConnections
+      summary: "List all connections"
+      description: "Retrieve all connections with optional sorting by specified fields."
+      parameters:
+        - name: "sortBy"
+          in: "query"
+          description: "Field to sort by (e.g., 'fromStation' or 'toStation')"
+          required: false
+          schema:
+            type: "string"
+        - name: "sortDirection"
+          in: "query"
+          description: "Direction of sorting, either ascending (asc) or descending (desc)"
+          required: false
+          schema:
+            type: "string"
+            enum: [ "asc", "desc" ]
+      responses:
+        '200':
+          description: "A list of connections"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          description: "Unique identifier for the connection"
+                        fromStation:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            name:
+                              type: string
+                          description: "Information about the starting station"
+                        toStation:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            name:
+                              type: string
+                          description: "Information about the destination station"
+    post:
+      tags:
+        - Connections
+      operationId: createConnection
+      summary: "Create a new connection"
+      description: "Create a new connection between two stations."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ fromStationId, toStationId ]
+              properties:
+                fromStationId:
+                  type: string
+                  description: "ID of the starting station"
+                toStationId:
+                  type: string
+                  description: "ID of the destination station"
+      responses:
+        '201':
+          description: "Connection created"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      fromStationId:
+                        type: string
+                      toStationId:
+                        type: string
+
+  /connections/{id}:
+    get:
+      tags:
+        - Connections
+      operationId: getConnectionById
+      summary: "Retrieve a connection by ID"
+      description: "Get a single connection by its unique ID."
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "Connection found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      fromStation:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          name:
+                            type: string
+                      toStation:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          name:
+                            type: string
+        '404':
+          description: "Connection not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+
+    delete:
+      tags:
+        - Connections
+      operationId: deleteConnectionById
+      summary: "Delete a connection by ID"
+      description: "Delete a connection by its unique ID."
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "Connection deleted"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        '404':
+          description: "Connection not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
