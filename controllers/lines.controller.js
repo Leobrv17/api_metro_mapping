@@ -1,4 +1,4 @@
-import {getAll, getById, deleteById, create} from "../services/lines.service.js";
+import {getAll, getById, deleteById, create, addStationToLigne} from "../services/lines.service.js";
 
 export const getLines = async (req, res) => {
     // Calling the service function with the sortBy and sortDir parameters from the query string
@@ -52,3 +52,31 @@ export const createLine = async (req, res) => {
         success: true, data: line
     })
 }
+
+export const addStationToLigneController = async (req, res) => {
+    const { ligneId, stationId } = req.body; // Récupérer les IDs depuis le corps de la requête
+
+    if (!ligneId || !stationId) {
+        return res.status(400).json({
+            success: false,
+            message: 'Both ligneId and stationId are required.',
+        });
+    }
+
+    try {
+        const updatedLigne = await addStationToLigne(ligneId, stationId);
+
+        return res.status(200).json({
+            success: true,
+            message: 'Station successfully added to the ligne.',
+            data: updatedLigne,
+        });
+    } catch (error) {
+        console.error('Error adding station to ligne:', error);
+
+        return res.status(500).json({
+            success: false,
+            message: error.message || 'An error occurred while adding the station to the ligne.',
+        });
+    }
+};

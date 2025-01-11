@@ -90,3 +90,31 @@ export const create = async (name, couleur, open) => {
         }
     });
 };
+
+export const addStationToLigne = async (ligneId, stationId) => {
+    const ligne = await prisma.ligne.findUnique({
+        where: { id: ligneId },
+    });
+
+    if (!ligne) {
+        throw new Error(`Ligne with ID "${ligneId}" not found.`);
+    }
+
+    const station = await prisma.station.findUnique({
+        where: { id: stationId },
+    });
+
+    if (!station) {
+        throw new Error(`Station with ID "${stationId}" not found.`);
+    }
+
+    return prisma.ligne.update({
+        where: { id: ligneId },
+        data: {
+            stations: {
+                connect: { id: stationId }, // Connecter la station
+            },
+        },
+        include: { stations: true },
+    });
+};

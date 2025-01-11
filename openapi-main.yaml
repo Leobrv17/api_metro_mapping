@@ -195,7 +195,113 @@ paths:
                   message:
                     type: string
                     example: "Line not found."
-
+  /lines/station:
+    post:
+      tags:
+        - Lines
+      summary: "Add a station to a ligne"
+      description: "Associate an existing station with an existing ligne."
+      operationId: addStationToLigne
+      requestBody:
+        required: true
+        description: "IDs of the ligne and the station to be associated."
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - ligneId
+                - stationId
+              properties:
+                ligneId:
+                  type: string
+                  description: "The ID of the ligne."
+                  example: "12345"
+                stationId:
+                  type: string
+                  description: "The ID of the station."
+                  example: "67890"
+      responses:
+        '200':
+          description: "Station successfully added to the ligne."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Station successfully added to the ligne."
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: "The ID of the ligne."
+                        example: "12345"
+                      name:
+                        type: string
+                        description: "The name of the ligne."
+                        example: "Ligne Rouge"
+                      couleur:
+                        type: string
+                        description: "The color of the ligne."
+                        example: "Rouge"
+                      open:
+                        type: boolean
+                        description: "Indicates whether the ligne is active."
+                        example: true
+                      stations:
+                        type: array
+                        description: "The stations associated with the ligne."
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              description: "The ID of the station."
+                              example: "67890"
+                            name:
+                              type: string
+                              description: "The name of the station."
+                              example: "StationA"
+                            x:
+                              type: integer
+                              description: "The x-coordinate of the station."
+                              example: 100
+                            y:
+                              type: integer
+                              description: "The y-coordinate of the station."
+                              example: 200
+        '400':
+          description: "Invalid input data."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Both ligneId and stationId are required."
+        '500':
+          description: "Server error."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "An error occurred while adding the station to the ligne."
   /stations:
     get:
       tags:
@@ -655,3 +761,255 @@ paths:
                     type: boolean
                   message:
                     type: string
+  /users:
+    get:
+      tags:
+        - Users
+      summary: Get all users
+      description: Retrieve a list of all users, optionally sorted by a specified field and direction.
+      operationId: getUsers
+      responses:
+        '200':
+          description: List of users retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        idt:
+                          type: string
+                          example: "user123"
+                        password:
+                          type: string
+                          example: "password123"
+    post:
+      tags:
+        - Users
+      summary: Create a new user
+      description: Create a new user with the provided identifier and password.
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - idt
+                - password
+              properties:
+                idt:
+                  type: string
+                  description: Identifier of the user.
+                  example: "user123"
+                password:
+                  type: string
+                  description: Password of the user.
+                  example: "password123"
+      responses:
+        '200':
+          description: User created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      idt:
+                        type: string
+                        example: "user123"
+                      password:
+                        type: string
+                        example: "password123"
+  /users/{id}:
+    get:
+      tags:
+        - Users
+      summary: Get user by ID
+      description: Retrieve details of a specific user by their ID.
+      operationId: getUserById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the user to retrieve.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User details retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      idt:
+                        type: string
+                        example: "user123"
+                      password:
+                        type: string
+                        example: "password123"
+        '404':
+          description: User not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "User not found."
+    delete:
+      tags:
+        - Users
+      summary: Delete user by ID
+      description: Delete a user identified by their ID.
+      operationId: deleteUserById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the user to delete.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "User deleted successfully."
+        '404':
+          description: User not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "User not found."
+  /users/login:
+    post:
+      tags:
+        - Users
+      operationId: loginUser
+      summary: "Login a user"
+      description: "Authenticates the user with username and password and returns a JWT token."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - idt
+                - password
+              properties:
+                username:
+                  type: string
+                  description: "The username of the user."
+                  example: "john_doe"
+                password:
+                  type: string
+                  description: "The password of the user."
+                  example: "securepassword123"
+      responses:
+        '200':
+          description: "Login successful and JWT token returned."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Login successful"
+                  token:
+                    type: string
+                    description: "JWT token for the authenticated user."
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MX0.xJd5NbHJ9n9ZT3sLjVxkK9_D92YgrOX6jXnftI5fNRs"
+        '400':
+          description: "Invalid username or password"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Invalid username or password"
+        '404':
+          description: "User not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "User not found"
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        idt:
+          type: string
+          example: "user123"
+        password:
+          type: string
+          example: "password123"

@@ -1,5 +1,11 @@
 import express from 'express'
-import {getLines, getLineById, deleteLineById, createLine} from "../controllers/lines.controller.js";
+import {
+    getLines,
+    getLineById,
+    deleteLineById,
+    createLine,
+    addStationToLigneController
+} from "../controllers/lines.controller.js";
 
 // Create a new router
 const router = express.Router()
@@ -10,6 +16,7 @@ router.get('/', getLines) // Will match GET /users
 router.get('/:id', getLineById) // Will match GET /users/:id
 router.delete('/:id', deleteLineById) // Will match DELETE /users/:id
 router.post('/', createLine) // Will match POST /users
+router.post('/station', addStationToLigneController);
 
 // Export the router to be used on the app
 export default router

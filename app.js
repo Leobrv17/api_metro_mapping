@@ -6,6 +6,7 @@ import * as url from 'url';
 import linesRouter from "./routers/lines.router.js";
 import stationRouter from "./routers/station.router.js";
 import connectionRouter from "./routers/connections.router.js";
+import usersRouter from "./routers/user.router.js";
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
@@ -23,6 +24,8 @@ app.use(OpenApiValidator.middleware({
 app.use('/lines', linesRouter)
 app.use('/stations', stationRouter)
 app.use('/connections', connectionRouter)
+app.use('/users', usersRouter)
+
 
 app.use((err, req, res, next) => {
     // format error
