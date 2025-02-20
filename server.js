@@ -4,7 +4,7 @@ import prisma from './db.js'
 prisma.$connect().then(async () => {
     console.log('Connected to the database')
 
-    app.listen('3000', () => {
+    app.listen('3000', "0.0.0.0",() => {
         console.log('Server running on port 3000')
     })
 }).catch((error) => {
